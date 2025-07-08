@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/Challenge-Intuit/v17
+/.vs
+/Challenge - Back/Backend-Challenge/Backend-Challenge/obj
+/Challenge - Back/Backend-Challenge/.vs/Backend-Challenge
