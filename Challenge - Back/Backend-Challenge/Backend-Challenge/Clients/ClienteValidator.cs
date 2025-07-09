@@ -10,20 +10,24 @@ namespace Backend_Challenge.WebAPI.Clients
         {
             //validación de nombre y apellido, en valor y tamaño.
             RuleFor(x => x.Nombre)
-                .NotEmpty().WithMessage("El nombre es obligatorio.")
+                .NotEmpty().Must(x => !string.IsNullOrWhiteSpace(x))
+                .WithMessage("El nombre es obligatorio.")
                 .MaximumLength(150);
 
             RuleFor(x => x.Apellido)
-                .NotEmpty().WithMessage("El nombre es obligatorio.")
+                .NotEmpty().Must(x => !string.IsNullOrWhiteSpace(x))
+                .WithMessage("El nombre es obligatorio.")
                 .MaximumLength(150);
 
             //se valida que CUIT y teléfono no estén vacíos y cumplan cierto formato
             RuleFor(x => x.CUIT)
-                .NotEmpty().WithMessage("El CUIT es obligatorio.")
+                .NotEmpty().Must(x => !string.IsNullOrWhiteSpace(x))
+                .WithMessage("El CUIT es obligatorio.")
                 .Matches(@"^\d{2}-\d{8}-\d{1}$").WithMessage("Formato de CUIT inválido.");
 
             RuleFor(x => x.Telefono)
-                .NotEmpty().WithMessage("El teléfono es obligatorio.")
+                .NotEmpty().Must(x => !string.IsNullOrWhiteSpace(x))
+                .WithMessage("El teléfono es obligatorio.")
                 .Matches(@"^\+?\d{7,15}$").WithMessage("Formato de teléfono inválido.");
 
             //Se valida que email no esté vacío y que cumpla con los valores estándar de mail.

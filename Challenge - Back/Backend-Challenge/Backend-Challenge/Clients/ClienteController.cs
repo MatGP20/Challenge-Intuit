@@ -1,5 +1,6 @@
 ﻿using BackEnd.DataService.Entities;
 using BackEnd.DataService.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend_Challenge.WebAPI.Clients
@@ -9,10 +10,12 @@ namespace Backend_Challenge.WebAPI.Clients
     public class ClienteController : ControllerBase
     {
         protected readonly IClienteService _clienteService;
+        private readonly IValidator<Clientes> _validator;
 
-        public ClienteController(IClienteService clienteService) 
+        public ClienteController(IClienteService clienteService, IValidator<Clientes> validator) 
         {
-              _clienteService = clienteService;
+            _clienteService = clienteService;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -57,12 +60,13 @@ namespace Backend_Challenge.WebAPI.Clients
         {
             try
             {
-                var result = await _clienteService.AddNewClienteAsync(newCliente);
-                if (result)
+                var validResult = await _validator.ValidateAsync(newCliente);
+                if (validResult.IsValid)
                 {
-                    return Ok();
+                    var result = await _clienteService.AddNewClienteAsync(newCliente);
+                    return result ? Ok(): BadRequest();
                 }
-                return BadRequest();
+                return BadRequest(validResult.Errors);
             }
             catch (Exception) 
             {
@@ -75,10 +79,11 @@ namespace Backend_Challenge.WebAPI.Clients
         {
             try
             {
-                var result = await _clienteService.UpdateClienteAsync(cliente);
-                if (result)
+                var validResult = await _validator.ValidateAsync(cliente);
+                if (validResult.IsValid)
                 {
-                    return Ok();
+                    var result = await _clienteService.UpdateClienteAsync(cliente);
+                    return result ? Ok() : BadRequest();                    
                 }
                 return BadRequest();
             }
