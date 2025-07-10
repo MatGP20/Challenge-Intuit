@@ -2,6 +2,8 @@
 using FrontendChallenge.WeatherPage.Responses;
 using FrontendChallenge.WeatherPage.Services;
 using Microsoft.AspNetCore.Components;
+using System.Globalization;
+using static FrontendChallenge.WeatherPage.Responses.GeoCodingResponse;
 
 namespace FrontendChallenge.WeatherPage.Components.Pages
 {
@@ -9,14 +11,19 @@ namespace FrontendChallenge.WeatherPage.Components.Pages
     {
         [Inject] private GeoCodingService GeoService { get; set; }
         [Inject] private ForecasterService ForecastService { get; set; }
+        [Inject] private HistoryForecastService HistoryService { get; set; }
         [Inject] private INotificationLoading NotificationLoading { get; set; }
 
         private string busqueda = string.Empty;
-        private List<GeoCodingService.Lugar> sugerencias = new();
-        private GeoCodingService.Lugar lugarSeleccionado;
+        private DateOnly startDayValue = DateOnly.FromDateTime(DateTime.Now.AddDays(-15));
+        private DateOnly finishDayValue = DateOnly.FromDateTime(DateTime.Now);
+        private string maxDaysPicker = DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        private List<Lugar> sugerencias = new();
+        private Lugar lugarSeleccionado;
         private ForecasterResponse forecast;
+        private HistoryForecastResponse historyForecast;
         private string weatherCodeString;
-        private List<string> diasAbreviados = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+        private string searchHistoryMessage = string.Empty;
 
         protected override async Task OnInitializedAsync()
         {
@@ -43,7 +50,7 @@ namespace FrontendChallenge.WeatherPage.Components.Pages
             await BuscarAsync();
         }
 
-        private async Task SeleccionarLugar(GeoCodingService.Lugar lugar)
+        private async Task SeleccionarLugar(Lugar lugar)
         {
             NotificationLoading.ShowModal();
             lugarSeleccionado = lugar;
@@ -51,6 +58,25 @@ namespace FrontendChallenge.WeatherPage.Components.Pages
             busqueda = string.Empty;
             forecast = await ForecastService.GetForecastAsync(lugarSeleccionado.Latitude, lugarSeleccionado.Longitude);
             weatherCodeString = WeatherCodeHelper.ObtenerDescripcion(forecast.Current.Weather_Code);
+            
+            if (startDayValue < finishDayValue)
+                historyForecast = await HistoryService.ObtenerHistoricoAsync(forecast.Latitude, forecast.Longitude, startDayValue, finishDayValue);
+            
+            await InvokeAsync(StateHasChanged);
+            NotificationLoading.CloseModal();
+        }
+
+        private async Task SearchHistoryForecast()
+        {
+            NotificationLoading.ShowModal();
+            if(startDayValue < finishDayValue)
+            {
+                historyForecast = await HistoryService.ObtenerHistoricoAsync(forecast.Latitude, forecast.Longitude, startDayValue, finishDayValue);
+            }
+            else
+            {
+                searchHistoryMessage = "Por favor verifica que la fechas de la búsqueda";
+            }
             await InvokeAsync(StateHasChanged);
             NotificationLoading.CloseModal();
         }
@@ -69,5 +95,22 @@ namespace FrontendChallenge.WeatherPage.Components.Pages
                 _ => ""
             };
         }
+
+        private string ObtenerMesAbreviado(int mes) => mes switch
+        {
+            1 => "Ene",
+            2 => "Feb",
+            3 => "Mar",
+            4 => "Abr",
+            5 => "May",
+            6 => "Jun",
+            7 => "Jul",
+            8 => "Ago",
+            9 => "Sep",
+            10 => "Oct",
+            11 => "Nov",
+            12 => "Dic",
+            _ => ""
+        };
     }
 }

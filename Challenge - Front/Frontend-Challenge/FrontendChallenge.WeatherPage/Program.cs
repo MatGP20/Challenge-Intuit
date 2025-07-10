@@ -9,6 +9,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ForecasterService>();
 builder.Services.AddScoped<GeoCodingService>();
+builder.Services.AddScoped<HistoryForecastService>();
 builder.Services.AddScoped<INotificationLoading, NotificationLoading>();
 
 
