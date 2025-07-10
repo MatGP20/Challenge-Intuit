@@ -22,6 +22,7 @@
 
 .logoSVG {
     margin-right:auto;
+    position:relative;
 }
 
     .logoSVG > svg {
@@ -30,8 +31,11 @@
     }
 
 .logoGif {
-    width: 3rem;
-    height: 3rem;
+    position:absolute;
+    top:-1rem;
+    right:20rem;
+    width: 4rem;
+    height: 4rem;
 }
 
 .logoTittle {
