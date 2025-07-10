@@ -7,9 +7,9 @@
             return codigo switch
             {
                 0 => "Cielo despejado",
-                1 => "Cielo Principalmente despejado",
-                2 => "Cielo Algo nublado",
-                3 => "Cielo Cubierto",
+                1 => "Cielo principalmente despejado",
+                2 => "Cielo algo nublado",
+                3 => "Cielo cubierto",
                 45 => "Niebla",
                 48 => "Niebla con escarcha",
                 51 => "Llovizna ligera",

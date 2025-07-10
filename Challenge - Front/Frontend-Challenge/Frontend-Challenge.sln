@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36221.1 d17.14
+VisualStudioVersion = 17.14.36221.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontendChallenge.WeatherPage", "FrontendChallenge.WeatherPage\FrontendChallenge.WeatherPage.csproj", "{8C6D5B2C-4A8C-4377-B3C2-F77A3A1B68A0}"
 EndProject
