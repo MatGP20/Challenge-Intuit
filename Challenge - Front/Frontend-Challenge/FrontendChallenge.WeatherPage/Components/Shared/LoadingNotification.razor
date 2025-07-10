@@ -1,0 +1,17 @@
+﻿
+<div class="modal @(IsVisible?"modalShow":"hide")" id="modalNotification" role="dialog" tabindex="-1" aria-labelledby="modalNotificationLabel" style="display:@modalDisplay; overflow-y: auto;">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content bgModal">
+            <div class="mx-auto my-5 col-6 py-5 row">
+                <h1 class="col-12 text-center text-white fw-bolder">CARGANDO...</h1>
+                <div class="spinner-border text-dark fw-bolder text-center spinnerSize" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@if (showBackdrop)
+{
+    <div class="modal-backdrop fade show" data-bs-backdrop="static" data-bs-keyboard="false"></div>
+}

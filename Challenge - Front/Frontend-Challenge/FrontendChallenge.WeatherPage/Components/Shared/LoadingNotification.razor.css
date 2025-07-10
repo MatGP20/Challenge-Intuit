@@ -1,0 +1,25 @@
+﻿.modalShow {
+    animation: fadein 1s;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.spinnerSize {
+    margin: 3rem auto;
+    font-size: 3rem;
+    height: 10vw;
+    width: 10vw;
+}
+
+.bgModal {
+    background-color: #FFFFFF00;
+    border: solid 0 black;
+}

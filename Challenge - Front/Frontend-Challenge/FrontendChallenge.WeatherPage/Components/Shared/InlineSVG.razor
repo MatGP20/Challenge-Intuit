@@ -1,0 +1,59 @@
+﻿@inject IWebHostEnvironment Env
+@using System.IO
+@using Microsoft.AspNetCore.Components
+
+@if (!string.IsNullOrWhiteSpace(SvgMarkup))
+{
+    <div class="@CssClass" style="@Style">
+        @((MarkupString)SvgMarkup)
+    </div>
+}
+
+@code {
+    [Parameter] public int WeatherCode { get; set; }
+    [Parameter] public int IsDay { get; set; }
+    [Parameter] public string CssClass { get; set; } = string.Empty;
+    [Parameter] public string Style { get; set; } = string.Empty;
+
+    private string? SvgMarkup;
+
+    protected override void OnParametersSet()
+    {
+        string fileName = GetSvgFileName(WeatherCode, IsDay);
+        string path = Path.Combine(Env.WebRootPath, "svg", fileName);
+
+        if (File.Exists(path))
+        {
+            SvgMarkup = File.ReadAllText(path);
+        }
+        else
+        {
+            SvgMarkup = $"<!-- SVG no encontrado para código {WeatherCode} -->";
+        }
+    }
+
+    private string GetSvgFileName(int code, int isDay)
+    {
+        return (code, isDay) switch
+        {
+            (0, 1) => "Sunny.svg",
+            (0, 0) => "Moon.svg",
+            (1 or 2, 1) => "PartlyCloudyDay.svg",
+            (1 or 2, 0) => "PartlyCloudyNight.svg",
+            (3, 1 or 0) => "Cloudy.svg",
+            (45 or 48, 1 or 0) => "Fog.svg",
+            (51 or 53 or 55 or 56 or 57,0 or 1) => "Drizzle.svg",
+            (61 or 63, 1) => "RainShowersDay.svg",
+            (61 or 63, 0) => "RainShowersNight.svg",
+            (65, 0 or 1) => "Rain.svg",
+            (66 or 67, 1) => "SnowShowerDay.svg",
+            (66 or 67, 0) => "SnowShowerNight.svg",
+            (71 or 73 or 75 or 77 or 85 or 86, 0 or 1) => "Snowflake.svg",
+            (80 or 81 or 82, 0 or 1) => "Squalls.svg",
+            (95, 0 or 1) => "Thunderstorm.svg",
+            (96 or 99, 1) => "HailDay.svg",
+            (96 or 99, 0) => "HailNight.svg",
+            _ => "Cloudy.svg"
+        };
+    }
+}

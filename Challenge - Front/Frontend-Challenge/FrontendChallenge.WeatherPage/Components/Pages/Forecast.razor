@@ -1,0 +1,91 @@
+﻿@page "/"
+@using FrontendChallenge.WeatherPage.Helpers
+
+<PageTitle>Pronóstico</PageTitle>
+
+<div class="row SearchBarBox">
+    @if (lugarSeleccionado != null)
+    {
+        <div class="mb-auto text-center text-white col-7 h1">
+            <strong> @lugarSeleccionado.Name, @lugarSeleccionado.Country </strong>
+        </div>
+    }
+    
+    <div class="position-relative col-4">
+        <input class="form-control"
+               placeholder="Buscar Ciudad o Pais..."
+               value="@busqueda"
+               oninput="@ChangeSearch"/>
+
+        @if (sugerencias.Any())
+        {
+            <ul class="list-group ListSugerencias">
+                @foreach (var lugar in sugerencias)
+                {
+                    <li class="list-group-item list-group-item-action"
+                        style="cursor: pointer"
+                        @onclick="() => SeleccionarLugar(lugar)">
+                        @lugar.Display
+                    </li>
+                }
+            </ul>
+        }
+    </div>    
+</div>
+<div class="blockCurrentExtended">
+    <div class="CurrentForecastBlock">
+        @if (forecast != null)
+        {
+            <p><strong>Tiempo actual:</strong></p>
+            <div class="row justify-content-evenly">
+                <div class="col-4">
+                    <InlineSVG WeatherCode="@forecast.Current.Weather_Code" IsDay="@forecast.Current.Is_Day" CssClass="weatherCurrentIcon"></InlineSVG>
+                    <p class="ps-3 h2 text-white text-center"><strong> @weatherCodeString </strong></p>
+                </div>
+                <div class="col-7 text-white ps-5 flex-column align-content-center fs-4">
+                    <p><strong>Temperatura Actual: </strong>@forecast.Current.Temperature_2m @forecast.Current_Units.Temperature_2m</p>
+                    <p><strong>Temperatura Máxima: </strong>@forecast.Daily.Temperature_2m_Max.FirstOrDefault() @forecast.Current_Units.Temperature_2m</p>
+                    <p><strong>Temperatura Mínima: </strong>@forecast.Daily.Temperature_2m_Min.FirstOrDefault() @forecast.Current_Units.Temperature_2m</p>
+                    <p><strong>Humedad: </strong>@forecast.Current.Relative_humidity_2m %</p>
+                    <p><strong>Probabilidad de Lluvia: </strong>@forecast.Current.Precipitation %</p>                    
+                </div>
+            </div>
+        }
+    </div>
+    <div class="ExtendedForecastBlock">
+        @if (forecast != null)
+        {
+            @for (var d = 0; d < forecast.Daily.Time.Count(); d++)
+            {
+                var day = d;
+                var date = DateOnly.Parse(forecast.Daily.Time[day]);
+                <div class="dailyForecast">
+                    @if (day != 0)
+                    {
+                        <div class="d-flex flex-row justify-content-between">
+                            <p>@date.Day</p>
+                            <p>@ObtenerDiaAbreviado(date)</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-row justify-content-between">
+                            <p>@date.Day</p>
+                            <p>Hoy</p>
+                        </div>
+                    }                    
+                    <div class="text-center">
+                        <InlineSVG WeatherCode="@forecast.Daily.Weather_Code[day]" IsDay=1 CssClass="weatherExtendedIcon mx-auto"></InlineSVG>
+                        <p class="text-white text-center"><strong> @(WeatherCodeHelper.ObtenerDescripcion(@forecast.Daily.Weather_Code[day]))</strong></p>
+                    </div>
+                    <div class="d-flex flex-row justify-content-between">
+                        <strong>Máx: @forecast.Daily.Temperature_2m_Max[day]</strong>
+                        <strong>Mín: @forecast.Daily.Temperature_2m_Min[day]</strong>
+                    </div>
+                </div>
+            }
+        }
+        
+    </div>
+</div>
+
